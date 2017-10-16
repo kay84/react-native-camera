@@ -228,7 +228,6 @@ RCT_CUSTOM_VIEW_PROPERTY(type, NSInteger, RCTCamera) {
         [self.session addInput:captureDeviceInput];
 
         [NSNotificationCenter.defaultCenter removeObserver:self name:AVCaptureDeviceSubjectAreaDidChangeNotification object:currentCaptureDevice];
-
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(subjectAreaDidChange:) name:AVCaptureDeviceSubjectAreaDidChangeNotification object:captureDevice];
         self.videoCaptureDeviceInput = captureDeviceInput;
         [self setFlashMode];
@@ -546,6 +545,8 @@ RCT_EXPORT_METHOD(setZoom:(CGFloat)zoomFactor) {
     [self.session beginConfiguration];
 
     NSError *error = nil;
+      
+    AVCaptureDevice *currentCaptureDevice = [self.videoCaptureDeviceInput device];
     AVCaptureDevice *captureDevice;
 
     if (type == AVMediaTypeAudio) {
@@ -577,6 +578,9 @@ RCT_EXPORT_METHOD(setZoom:(CGFloat)zoomFactor) {
         self.audioCaptureDeviceInput = captureDeviceInput;
       }
       else if (type == AVMediaTypeVideo) {
+        [NSNotificationCenter.defaultCenter removeObserver:self name:AVCaptureDeviceSubjectAreaDidChangeNotification object:currentCaptureDevice];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(subjectAreaDidChange:) name:AVCaptureDeviceSubjectAreaDidChangeNotification object:captureDevice];
+          
         self.videoCaptureDeviceInput = captureDeviceInput;
         [self setFlashMode];
       }
