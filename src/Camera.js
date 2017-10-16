@@ -188,6 +188,7 @@ export default class Camera extends Component {
   async componentWillMount() {
     this._addOnBarCodeReadListener();
     this._addOnFocusChanged()
+    this._addOnZoomChanged()
     let { captureMode } = convertNativeProps({ captureMode: this.props.captureMode });
     let hasVideoAndAudio =
       this.props.captureAudio && captureMode === Camera.constants.CaptureMode.video;
@@ -199,6 +200,7 @@ export default class Camera extends Component {
   componentWillUnmount() {
     this._removeOnBarCodeReadListener()
     this._removeOnFocusChanged()
+    this._removeOnZoomChanged()
     if (this.state.isRecording) {
       this.stopCapture();
     }
@@ -214,11 +216,6 @@ export default class Camera extends Component {
     }
   }
 
-  _addOnFocusChanged(props) {
-    const { onFocusChanged } = props || this.props;
-    this.focusListener = NativeAppEventEmitter.addListener('focusChanged', onFocusChanged)
-  }
-
   _addOnBarCodeReadListener(props) {
     const { onBarCodeRead } = props || this.props;
     this._removeOnBarCodeReadListener();
@@ -229,10 +226,35 @@ export default class Camera extends Component {
       });
     }
   }
+  _addOnFocusChanged(props) {
+    if (Platform.OS === 'ios') {
+      const { onFocusChanged } = props || this.props;
+      this.focusListener = NativeAppEventEmitter.addListener('focusChanged', onFocusChanged)
+    }
+  }
+
+  _addOnZoomChanged(props) {
+    if (Platform.OS === 'ios') {
+      const { onZoomChanged } = props || this.props;
+      this.zoomListener = NativeAppEventEmitter.addListener('zoomChanged', onFocusChanged)
+    }
+  }
   _removeOnBarCodeReadListener() {
     const listener = this.cameraBarCodeReadListener;
     if (listener) {
       listener.remove();
+    }
+  }
+  _removeOnFocusChanged() {
+    const listener = this.focusListener
+    if (listener) {
+      listener.remove()
+    }
+  }
+  _removeOnZoomChanged() {
+    const listener = this.zoomListener
+    if (listener) {
+      listener.remove()
     }
   }
 
