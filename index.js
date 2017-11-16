@@ -200,8 +200,15 @@ export default class Camera extends Component {
   }
 
   render() {
-    if (!this.state.isAuthorized) return this.props.children;
     const style = [styles.base, this.props.style];
+
+    if (!this.state.isAuthorized) {
+      return (
+        <View style={style}>
+          {this.props.children}
+        </View>
+      )
+    }
     const nativeProps = convertNativeProps(this.props);
 
     return <RCTCamera ref={CAMERA_REF} {...nativeProps} />;
