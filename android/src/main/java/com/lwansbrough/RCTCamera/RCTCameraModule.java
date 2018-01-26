@@ -526,12 +526,12 @@ public class RCTCameraModule extends ReactContextBaseJavaModule
         }
 
         RCTCamera.getInstance().adjustCameraRotationToDeviceOrientation(options.getInt("type"), deviceOrientation);
-        camera.setPreviewCallback(null);
+        // camera.setPreviewCallback(null);
 
         Camera.PictureCallback captureCallback = new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(final byte[] data, Camera camera) {
-                camera.stopPreview();
+                // camera.stopPreview();
                 camera.startPreview();
 
                 AsyncTask.execute(new Runnable() {
