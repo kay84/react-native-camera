@@ -8,7 +8,8 @@ import {
   StyleSheet,
   requireNativeComponent,
   View,
-  ViewPropTypes
+  ViewPropTypes,
+  findNodeHandle
 } from 'react-native';
 
 const CameraManager = NativeModules.CameraManager || NativeModules.CameraModule;
@@ -177,7 +178,7 @@ export default class Camera extends Component {
 
   componentWillReceiveProps(newProps) {
     const { onBarCodeRead } = this.props
-    if (onBarCodeRead !== newProps.onBarCodeRead) {
+    if (onBarCodeRead && !newProps.onBarCodeRead) {
       this._addOnBarCodeReadListener(newProps)
     }
   }
@@ -243,7 +244,8 @@ export default class Camera extends Component {
       this.setState({ isRecording: true });
     }
 
-    return CameraManager.capture(options);
+    const handle = findNodeHandle(this.refs[CAMERA_REF]);
+    return CameraManager.capture(handle, options);
   }
 
   stopCapture() {
