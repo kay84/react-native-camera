@@ -244,8 +244,12 @@ export default class Camera extends Component {
       this.setState({ isRecording: true });
     }
 
-    const handle = findNodeHandle(this.refs[CAMERA_REF]);
-    return CameraManager.capture(handle, options);
+    if (Platform.OS === 'android') {
+      return CameraManager.capture(options);
+    } else {
+      const handle = findNodeHandle(this.refs[CAMERA_REF]);
+      return CameraManager.capture(handle, options);
+    }
   }
 
   stopCapture() {
