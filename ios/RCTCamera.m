@@ -392,7 +392,7 @@
          
              [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:[self.stillImageOutput connectionWithMediaType:AVMediaTypeVideo] completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
          
-                     if (imageDataSampleBuffer) {
+                     if (imageDataSampleBuffer && !error) {
                          NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
          
                          // Create image source
@@ -438,13 +438,13 @@
                          CGImageDestinationRef destination = CGImageDestinationCreateWithData((CFMutableDataRef)rotatedImageData, CGImageSourceGetType(source), 1, NULL);
                          CFRelease(source);
                          // add the image to the destination, reattaching metadata
-                         CGImageDestinationAddImage(destination, rotatedCGImage, (CFDictionaryRef) imageMetadata);
+                         CGImageDestinationAddImage(destination, rotatedCGImage, (__bridge CFDictionaryRef) imageMetadata);
                          // And write
-                         CGImageDestinationFinalize(destination);
+                         Boolean success = CGImageDestinationFinalize(destination);
+
+                         [self saveImage:(NSData *)CFBridgingRelease(rotatedImageData) target:target metadata:imageMetadata resolve:resolve reject:reject];
+
                          CFRelease(destination);
-         
-                         [self saveImage:rotatedImageData target:target metadata:imageMetadata resolve:resolve reject:reject];
-         
                          CGImageRelease(rotatedCGImage);
                      }
                      else {

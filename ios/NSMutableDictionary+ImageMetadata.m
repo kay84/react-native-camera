@@ -64,9 +64,9 @@
   if (!isnan(altitude)){
     if (altitude < 0) {
       altitude = -altitude;
-      [gps setObject:@"1" forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
+      [gps setObject:@(1) forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
     } else {
-      [gps setObject:@"0" forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
+      [gps setObject:@(0) forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
     }
     [gps setObject:[NSNumber numberWithFloat:altitude] forKey:(NSString *)kCGImagePropertyGPSAltitude];
   }
