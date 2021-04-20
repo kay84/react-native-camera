@@ -442,7 +442,7 @@
                          // And write
                          Boolean success = CGImageDestinationFinalize(destination);
 
-                         [self saveImage:(NSData *)CFBridgingRelease(rotatedImageData) target:target metadata:imageMetadata resolve:resolve reject:reject];
+                         [self saveImage:(NSData *)CFBridgingRelease(CFBridgingRetain(rotatedImageData)) target:target metadata:imageMetadata resolve:resolve reject:reject];
 
                          CFRelease(destination);
                          CGImageRelease(rotatedCGImage);
